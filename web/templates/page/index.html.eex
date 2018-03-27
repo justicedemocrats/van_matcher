@@ -1,0 +1,113 @@
+<h3> VAN Matcher </h3>
+
+<p>
+  Hey there – this is a little web utility to help you match a CSV to VAN ids. 
+</p>
+  
+<p>
+  In order to use this, you need a .csv that has the <strong> first name </strong> and 
+  <strong> last name </strong> of voters in your state, and an additional column that
+  has either an <strong> email address </strong> or <strong> phone number </strong>. Your results will
+  be more accurate (fewer "not found"s) if you have both an email address and a phone number.
+</p>
+
+<p>
+  You also need a VAN API key, and to know your API key and your corresponding VAN application
+  name. If you don't have this information and have questions about how to get it, email me 
+  at <a href="mailto:ben@justicedemocrats.com"> ben@justicedemocrats.com </a>.
+</p>
+
+<form action="/?secret=<%= @secret %>" method="post" enctype="multipart/form-data">
+  <fieldset>
+    <legend> Upload a file for matching </legend>
+
+    <div class="input-field">
+      <%= file_input :upload, :file, [required: true, accept: ".csv", id: "file-upload"] %>
+    </div>
+
+    <%= for field <- fields() do %>
+      <div class="input-field">
+        <label for="col_<%= field.key %>">
+          What is the column of <%= field.label %>?
+          <%= if field.optional do %>
+            If it's not present, leave it as 0.
+          <% end %>
+        </label>
+        <input
+          type="number"
+          required="true"
+          <%= if field.optional do %>
+            min="0"
+            value="0" 
+          <% else %>
+            min="1"
+          <% end %>
+          name="col_<%= field.key %>"
+          id="col-<%= field.key %>"
+          class="col-selector" />
+      </div>
+
+      <table id="table-<%= field.key %>" style="display:none;" class="table-striped">
+        <thead>
+          <tr><th> Selected Column Preview </th></tr>
+        </thead>
+        <tbody class="table-body">
+        </tbody>
+      </table>
+    <% end %>
+
+    <div class="input-field">
+      <label for="api_key"> What is your VAN API key? </label>
+      <input type="text" name="api_key" required="true" />
+    </div>
+
+    <div class="input-field">
+      <label for="app_name"> What is the corresponding app name for your VAN API key? </label>
+      <input type="text" name="app_name" required="true" />
+    </div>
+
+    <div class="input-field">
+      <label for="email"> What email should we send the results to? </label>
+      <input type="email" name="email" required="true" />
+    </div>
+
+    <input type="hidden" value="<%= csrf_token() %>" name="_csrf_token">
+
+    <div class="input-field">
+      <button class="button" type="submit">
+        Submit
+      </button>
+    </div>
+  </fieldset>
+</form>
+
+<fieldset>
+  <legend> Current Jobs </legend>
+  <%= if length(@queued) == 0 do %>
+    <h3> No jobs queued right now. </h3>
+  <% else %>
+    <h6> Refresh to see progress updates. </h6>
+    <table>
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>File Name</th>
+        <th>Lines Processed</th>
+        <th>Sending Results To</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for job <- @queued do %>
+        <tr>
+          <td> <%= job.status.status %> </td>
+          <td> <%= job.task.filename %> </td>
+          <td> <%= job.status.progress %> </td>
+          <td> <%= job.task.email %> </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% end %>
+</fieldset>
+
+<script src="/js/app.js"></script>
