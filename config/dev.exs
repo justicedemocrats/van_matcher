@@ -46,7 +46,7 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-config :van_matcher, SortingHat.Mailer,
+config :van_matcher, VanMatcher.Mailer,
   adapter: Swoosh.Adapters.Mailgun,
   api_key: System.get_env("MAILGUN_API_KEY"),
   domain: System.get_env("MAILGUN_DOMAIN")

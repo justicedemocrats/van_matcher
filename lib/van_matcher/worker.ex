@@ -21,7 +21,7 @@ defmodule VanMatcher.Worker do
 
     output_path = "./output-files/#{without_type}-processed.csv"
     {:ok, out} = File.open(output_path, [:write])
-    header_row = ~s("VANID",) <> extract_header_line(path)
+    header_row = ~s("VANID",) <> extract_header_line(path) <> ~s(\n)
     IO.binwrite(out, header_row)
 
     match_candidate_extractor = generate_match_candidate_extractor(column_mapping)
@@ -51,18 +51,19 @@ defmodule VanMatcher.Worker do
         match_body = extractor.(row)
 
         result =
-          case VanMatcher.Api.post!("people/find", match_body, [], metadata) do
+          case VanMatcher.Api.post!(
+                 "people/find",
+                 match_body,
+                 [],
+                 Keyword.merge(metadata, timeout: 1_000_000)
+               ) do
             %{status_code: 302, body: ~m(vanId)} ->
               vanId
 
             resp = %{status_code: 404} ->
-              IO.puts(55)
-              IO.inspect(resp)
               "Not Found"
 
             other ->
-              IO.puts(59)
-              IO.inspect(other)
               "Not found"
           end
 
@@ -71,7 +72,7 @@ defmodule VanMatcher.Worker do
         IO.binwrite(out, output_string)
       end)
     end)
-    |> Enum.each(&Task.await/1)
+    |> Enum.each(&Task.await(&1, 1_000_000))
   end
 
   def extract_header_line(file) do

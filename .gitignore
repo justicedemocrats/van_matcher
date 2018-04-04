@@ -24,3 +24,5 @@ erl_crash.dump
 /config/prod.secret.exs
 .elixir_ls
 .env
+input-files/
+output-files/

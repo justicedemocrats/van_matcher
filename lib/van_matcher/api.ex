@@ -32,8 +32,6 @@ defmodule VanMatcher.Api do
   end
 
   defp process_request_body(body) when is_map(body) do
-    IO.inspect(body)
-
     case Poison.encode(body) do
       {:ok, encoded} -> encoded
       {:error, _problem} -> body

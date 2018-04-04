@@ -9,7 +9,7 @@ config :van_matcher, VanMatcher.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :van_matcher, SortingHat.Mailer,
+config :van_matcher, VanMatcher.Mailer,
   adapter: Swoosh.Adapters.Mailgun,
   api_key: "${MAILGUN_API_KEY}",
   domain: "${MAILGUN_DOMAIN}"
