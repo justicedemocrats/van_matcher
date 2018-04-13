@@ -86,9 +86,26 @@ defmodule VanMatcher.Worker do
     fn row ->
       Enum.reduce(mapping, %{}, fn {key, idx}, acc ->
         case key do
-          "emailAddress" -> Map.put(acc, "emails", [%{"email" => Enum.at(row, idx - 1)}])
-          "phoneNumber" -> Map.put(acc, "phones", [%{"phoneNumber" => Enum.at(row, idx - 1)}])
-          _ -> Map.put(acc, key, Enum.at(row, idx - 1))
+          "emailAddress" ->
+            case Enum.at(row, idx - 1) do
+              "" -> acc
+              email -> Map.put(acc, "emails", [~m(email)])
+            end
+
+          "phoneNumber" ->
+            case Enum.at(row, idx - 1) do
+              "" -> acc
+              phoneNumber -> Map.put(acc, "phones", [~m(phoneNumber)])
+            end
+
+          "zipOrPostalCode" ->
+            case Enum.at(row, idx - 1) do
+              "" -> acc
+              zipOrPostalCode -> Map.put(acc, "addresses", [~m(zipOrPostalCode)])
+            end
+
+          _ ->
+            Map.put(acc, key, Enum.at(row, idx - 1))
         end
       end)
       |> Enum.into(%{})

@@ -6,9 +6,10 @@
   
 <p>
   In order to use this, you need a .csv that has the <strong> first name </strong> and 
-  <strong> last name </strong> of voters in your state, and an additional column that
-  has either an <strong> email address </strong> or <strong> phone number </strong>. Your results will
-  be more accurate (fewer "not found"s) if you have both an email address and a phone number.
+  <strong> last name </strong> of voters in your state, and additional column(s) that
+  has either an <strong> email address </strong> or <strong> phone number </strong>,
+  or <strong> birth date AND zip code </strong>.
+  Your results will be more accurate (fewer "not found"s) if you have all of the above.
 </p>
 
 <p>

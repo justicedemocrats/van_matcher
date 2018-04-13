@@ -11,7 +11,9 @@ defmodule VanMatcher.PageView do
       {"First Name", "firstName", false},
       {"Last Name", "lastName", false},
       {"Phone Number", "phoneNumber", true},
-      {"Email Address", "emailAddress", true}
+      {"Email Address", "emailAddress", true},
+      {"Birth Date", "dateOfBirth", true},
+      {"Zip", "zipOrPostalCode", true}
     ]
     |> Enum.map(fn {label, key, optional} -> ~m(label key optional)a end)
   end
